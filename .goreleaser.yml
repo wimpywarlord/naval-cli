@@ -159,17 +159,11 @@ nfpms:
       - rpm
       - apk
 
-dockers:
-  - image_templates:
-      - "ghcr.io/wimpywarlord/naval-cli:{{ .Tag }}"
-      - "ghcr.io/wimpywarlord/naval-cli:latest"
-    dockerfile: |
-      FROM scratch
-      COPY naval-cli /
-      ENTRYPOINT ["/naval-cli"]
-    use: buildx
-    build_flag_templates:
-      - "--platform=linux/amd64,linux/arm64"
+# Docker support disabled for now - can be enabled later
+# dockers:
+#   - image_templates:
+#       - "ghcr.io/wimpywarlord/naval-cli:{{ .Tag }}"
+#       - "ghcr.io/wimpywarlord/naval-cli:latest"
 
 scoop:
   bucket:
