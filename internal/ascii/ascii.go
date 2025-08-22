@@ -1,7 +1,8 @@
-package main
+// Package ascii provides Naval Ravikant's ASCII art representation.
+package ascii
 
-const navalASCII = `
-⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⠿⠛⠁⠀⠀⠀⠀⠈⠀⠀⠉⠀⠀⢹⣿⣿⣿⣿⣿⣿⣿⣿⣿
+// navalASCII contains the ASCII art representation of Naval Ravikant.
+const navalASCII = `⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⠿⠛⠁⠀⠀⠀⠀⠈⠀⠀⠉⠀⠀⢹⣿⣿⣿⣿⣿⣿⣿⣿⣿
 ⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡿⠁⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢠⡀⠀⠀⠙⢿⣿⣿⣿⣿⣿⣿⣿
 ⠛⠿⠿⢿⣿⣿⣿⣿⣿⣿⠁⠀⠀⠀⠀⣀⣄⣤⣤⣤⣤⣴⣷⣿⣆⠀⢄⠈⣿⣿⣿⣿⣿⣿⣿
 ⠀⠀⠀⢸⣿⣿⣿⣿⣿⡿⠀⠀⠀⠀⣼⣾⣿⣿⣿⣿⣿⣿⣿⣿⣿⣷⢠⣴⣿⣿⣿⣿⣿⣿⣿
@@ -17,9 +18,9 @@ const navalASCII = `
 ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠹⢿⣿⣷⠀⠀⢀⣴⣾⠿⠿⠿⢿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡛⢿⡇⠀
 ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠑⠿⡇⠀⠀⠀⠀⠐⢠⡶⣶⣿⣿⣿⣿⣿⣿⣿⣿⣿⡇⠀⠁⠀
 ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢧⣀⠀⢀⡄⠀⠀⠀⠀⠈⠉⠛⠿⣿⣿⣿⡿⠿⠀⠀⠀⠀
-⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠘⣿⡶⠋⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
-`
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠘⣿⡶⠋⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀`
 
-func GetNavalASCII() string {
+// Get returns the ASCII art representation of Naval Ravikant.
+func Get() string {
 	return navalASCII
 }

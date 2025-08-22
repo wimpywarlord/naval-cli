@@ -37,25 +37,9 @@ jobs:
         with:
           distribution: goreleaser
           version: latest
-          args: release --clean
+          args: release --clean --config deployments/.goreleaser.yml
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-  homebrew-tap:
-    name: Update Homebrew Tap
-    runs-on: ubuntu-latest
-    needs: release
-    steps:
-      - name: Checkout Homebrew tap
-        uses: actions/checkout@v4
-        with:
-          repository: wimpywarlord/homebrew-naval-cli
-          token: ${{ secrets.HOMEBREW_TAP_TOKEN || secrets.GITHUB_TOKEN }}
-          ref: main
-
-      - name: Update Formula
-        run: |
-          echo "Homebrew formula will be updated by GoReleaser"
 
   validate:
     name: Validate Release

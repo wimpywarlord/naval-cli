@@ -1,10 +1,14 @@
-package main
+// Package quotes manages Naval Ravikant's quote collection and selection logic.
+package quotes
 
 import (
 	"math/rand"
 	"time"
+
+	"github.com/wimpywarlord/naval-cli/pkg/naval"
 )
 
+// navalQuotes contains the curated collection of Naval Ravikant quotes.
 var navalQuotes = []string{
 	"Seek wealth, not money or status. Wealth is having assets that earn while you sleep.",
 	"You're not going to get rich renting out your time. You must own equity to gain your financial freedom.",
@@ -58,35 +62,41 @@ var navalQuotes = []string{
 	"Reading a book isn't a race – the better the book, the slower it should be absorbed.",
 }
 
-type Quote struct {
-	Text   string
-	Author string
+// Service provides quote selection and management functionality.
+type Service struct {
+	rng *rand.Rand
 }
 
-func init() {
-	rand.Seed(time.Now().UnixNano())
+// New creates a new quote service with proper random seed.
+func New() *Service {
+	return &Service{
+		rng: rand.New(rand.NewSource(time.Now().UnixNano())),
+	}
 }
 
-func GetRandomQuote() Quote {
-	index := rand.Intn(len(navalQuotes))
-	return Quote{
+// GetRandom returns a single random quote from Naval Ravikant.
+func (s *Service) GetRandom() naval.Quote {
+	index := s.rng.Intn(len(navalQuotes))
+	return naval.Quote{
 		Text:   navalQuotes[index],
 		Author: "- Naval Ravikant",
 	}
 }
 
-func GetMultipleQuotes(count int) []Quote {
+// GetMultiple returns a specified number of unique random quotes.
+// If count exceeds available quotes, all quotes are returned.
+func (s *Service) GetMultiple(count int) []naval.Quote {
 	if count > len(navalQuotes) {
 		count = len(navalQuotes)
 	}
 	
-	quotes := make([]Quote, 0, count)
+	quotes := make([]naval.Quote, 0, count)
 	used := make(map[int]bool)
 	
 	for len(quotes) < count {
-		index := rand.Intn(len(navalQuotes))
+		index := s.rng.Intn(len(navalQuotes))
 		if !used[index] {
-			quotes = append(quotes, Quote{
+			quotes = append(quotes, naval.Quote{
 				Text:   navalQuotes[index],
 				Author: "- Naval Ravikant",
 			})
@@ -95,4 +105,21 @@ func GetMultipleQuotes(count int) []Quote {
 	}
 	
 	return quotes
+}
+
+// GetAll returns all available quotes (useful for testing or complete collections).
+func (s *Service) GetAll() []naval.Quote {
+	quotes := make([]naval.Quote, len(navalQuotes))
+	for i, text := range navalQuotes {
+		quotes[i] = naval.Quote{
+			Text:   text,
+			Author: "- Naval Ravikant",
+		}
+	}
+	return quotes
+}
+
+// Count returns the total number of available quotes.
+func (s *Service) Count() int {
+	return len(navalQuotes)
 }

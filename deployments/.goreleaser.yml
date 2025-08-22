@@ -10,7 +10,7 @@ before:
 
 builds:
   - id: naval-cli
-    main: .
+    main: ./cmd/naval-cli
     binary: naval-cli
     env:
       - CGO_ENABLED=0
@@ -40,9 +40,9 @@ builds:
         goarch: arm64
     ldflags:
       - -s -w
-      - -X main.Version={{.Version}}
-      - -X main.BuildDate={{.Date}}
-      - -X main.GitCommit={{.ShortCommit}}
+      - -X github.com/wimpywarlord/naval-cli/internal/version.Version={{.Version}}
+      - -X github.com/wimpywarlord/naval-cli/internal/version.BuildDate={{.Date}}
+      - -X github.com/wimpywarlord/naval-cli/internal/version.GitCommit={{.ShortCommit}}
 
 archives:
   - id: naval-cli
@@ -111,7 +111,7 @@ release:
     
     **Quick install:**
     ```bash
-    curl -sSL https://raw.githubusercontent.com/wimpywarlord/naval-cli/main/install.sh | bash
+    curl -sSL https://raw.githubusercontent.com/wimpywarlord/naval-cli/main/scripts/install.sh | bash
     ```
     
     **Homebrew:**
@@ -132,7 +132,7 @@ brews:
     tap:
       owner: wimpywarlord
       name: homebrew-naval-cli
-      branch: main
+      branch: master
     
     folder: Formula
     
