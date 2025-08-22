@@ -1,0 +1,184 @@
+# GoReleaser configuration
+# Documentation: https://goreleaser.com
+
+project_name: naval-cli
+
+before:
+  hooks:
+    - go mod tidy
+    - go mod download
+
+builds:
+  - id: naval-cli
+    main: .
+    binary: naval-cli
+    env:
+      - CGO_ENABLED=0
+    goos:
+      - linux
+      - windows
+      - darwin
+      - freebsd
+    goarch:
+      - amd64
+      - arm64
+      - "386"
+      - arm
+    goarm:
+      - "6"
+      - "7"
+    ignore:
+      - goos: darwin
+        goarch: "386"
+      - goos: windows
+        goarch: arm64
+      - goos: windows
+        goarch: arm
+      - goos: freebsd
+        goarch: arm
+      - goos: freebsd
+        goarch: arm64
+    ldflags:
+      - -s -w
+      - -X main.Version={{.Version}}
+      - -X main.BuildDate={{.Date}}
+      - -X main.GitCommit={{.ShortCommit}}
+
+archives:
+  - id: naval-cli
+    name_template: >-
+      {{ .ProjectName }}_
+      {{- .Version }}_
+      {{- title .Os }}_
+      {{- if eq .Arch "amd64" }}x86_64
+      {{- else if eq .Arch "386" }}i386
+      {{- else }}{{ .Arch }}{{ end }}
+      {{- if .Arm }}v{{ .Arm }}{{ end }}
+    format_overrides:
+      - goos: windows
+        format: zip
+    files:
+      - LICENSE
+      - README.md
+      - CHANGELOG.md
+
+checksum:
+  name_template: 'checksums.txt'
+  algorithm: sha256
+
+snapshot:
+  name_template: "{{ incpatch .Version }}-next"
+
+changelog:
+  sort: asc
+  use: github
+  filters:
+    exclude:
+      - '^docs:'
+      - '^test:'
+      - '^chore:'
+      - '^ci:'
+      - 'typo'
+      - 'Merge pull request'
+      - 'Merge branch'
+  groups:
+    - title: 'Features'
+      regexp: "^.*feat[(\\w)]*:+.*$"
+      order: 0
+    - title: 'Bug Fixes'
+      regexp: "^.*fix[(\\w)]*:+.*$"
+      order: 1
+    - title: 'Performance Improvements'
+      regexp: "^.*perf[(\\w)]*:+.*$"
+      order: 2
+    - title: Other
+      order: 999
+
+release:
+  github:
+    owner: wimpywarlord
+    name: naval-cli
+  
+  header: |
+    ## naval-cli v{{ .Version }}
+    
+    A beautiful command-line tool that displays Naval Ravikant's wisdom with ASCII art.
+
+  footer: |
+    ---
+    
+    ### Installation
+    
+    **Quick install:**
+    ```bash
+    curl -sSL https://raw.githubusercontent.com/wimpywarlord/naval-cli/main/install.sh | bash
+    ```
+    
+    **Homebrew:**
+    ```bash
+    brew tap wimpywarlord/naval-cli
+    brew install naval-cli
+    ```
+    
+    **Go install:**
+    ```bash
+    go install github.com/wimpywarlord/naval-cli@latest
+    ```
+    
+    Thanks to all contributors! 🙏
+
+brews:
+  - name: naval-cli
+    tap:
+      owner: wimpywarlord
+      name: homebrew-naval-cli
+      branch: main
+    
+    folder: Formula
+    
+    homepage: "https://github.com/wimpywarlord/naval-cli"
+    description: "Display Naval Ravikant's wisdom with ASCII art in your terminal"
+    license: "MIT"
+    
+    test: |
+      system "#{bin}/naval-cli", "--version"
+    
+    install: |
+      bin.install "naval-cli"
+
+nfpms:
+  - id: naval-cli
+    package_name: naval-cli
+    vendor: wimpywarlord
+    homepage: https://github.com/wimpywarlord/naval-cli
+    maintainer: wimpywarlord
+    description: Display Naval Ravikant's wisdom with ASCII art in your terminal
+    license: MIT
+    formats:
+      - deb
+      - rpm
+      - apk
+
+dockers:
+  - image_templates:
+      - "ghcr.io/wimpywarlord/naval-cli:{{ .Tag }}"
+      - "ghcr.io/wimpywarlord/naval-cli:latest"
+    dockerfile: |
+      FROM scratch
+      COPY naval-cli /
+      ENTRYPOINT ["/naval-cli"]
+    use: buildx
+    build_flag_templates:
+      - "--platform=linux/amd64,linux/arm64"
+
+scoop:
+  bucket:
+    owner: wimpywarlord
+    name: scoop-bucket
+    branch: main
+  
+  folder: bucket
+  
+  homepage: https://github.com/wimpywarlord/naval-cli
+  description: Display Naval Ravikant's wisdom with ASCII art in your terminal
+  license: MIT

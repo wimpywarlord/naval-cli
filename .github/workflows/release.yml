@@ -1,0 +1,96 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+permissions:
+  contents: write
+  packages: write
+
+jobs:
+  release:
+    name: Release
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: '1.21'
+          cache: true
+
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Run GoReleaser
+        uses: goreleaser/goreleaser-action@v5
+        with:
+          distribution: goreleaser
+          version: latest
+          args: release --clean
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  homebrew-tap:
+    name: Update Homebrew Tap
+    runs-on: ubuntu-latest
+    needs: release
+    steps:
+      - name: Checkout Homebrew tap
+        uses: actions/checkout@v4
+        with:
+          repository: wimpywarlord/homebrew-naval-cli
+          token: ${{ secrets.HOMEBREW_TAP_TOKEN || secrets.GITHUB_TOKEN }}
+          ref: main
+
+      - name: Update Formula
+        run: |
+          echo "Homebrew formula will be updated by GoReleaser"
+
+  validate:
+    name: Validate Release
+    runs-on: ${{ matrix.os }}
+    needs: release
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+    steps:
+      - name: Download and test binary (Unix)
+        if: runner.os != 'Windows'
+        run: |
+          VERSION=${GITHUB_REF#refs/tags/}
+          if [ "${{ runner.os }}" = "macOS" ]; then
+            OS="Darwin"
+            ARCH="arm64"
+            if [ "$(uname -m)" = "x86_64" ]; then
+              ARCH="x86_64"
+            fi
+          else
+            OS="Linux"
+            ARCH="x86_64"
+          fi
+          
+          URL="https://github.com/wimpywarlord/naval-cli/releases/download/${VERSION}/naval-cli_${VERSION#v}_${OS}_${ARCH}.tar.gz"
+          curl -L "$URL" | tar xz
+          ./naval-cli --version
+          ./naval-cli --help
+
+      - name: Download and test binary (Windows)
+        if: runner.os == 'Windows'
+        run: |
+          $VERSION = $env:GITHUB_REF -replace 'refs/tags/', ''
+          $URL = "https://github.com/wimpywarlord/naval-cli/releases/download/$VERSION/naval-cli_$($VERSION.TrimStart('v'))_Windows_x86_64.zip"
+          Invoke-WebRequest -Uri $URL -OutFile naval-cli.zip
+          Expand-Archive -Path naval-cli.zip -DestinationPath .
+          .\naval-cli.exe --version
+          .\naval-cli.exe --help
