@@ -165,14 +165,15 @@ nfpms:
 #       - "ghcr.io/wimpywarlord/naval-cli:{{ .Tag }}"
 #       - "ghcr.io/wimpywarlord/naval-cli:latest"
 
-scoop:
-  bucket:
-    owner: wimpywarlord
-    name: scoop-bucket
-    branch: main
-  
-  folder: bucket
-  
-  homepage: https://github.com/wimpywarlord/naval-cli
-  description: Display Naval Ravikant's wisdom with ASCII art in your terminal
-  license: MIT
+# Scoop support disabled until scoop-bucket repository is created
+# scoop:
+#   bucket:
+#     owner: wimpywarlord
+#     name: scoop-bucket
+#     branch: main
+#   
+#   folder: bucket
+#   
+#   homepage: https://github.com/wimpywarlord/naval-cli
+#   description: Display Naval Ravikant's wisdom with ASCII art in your terminal
+#   license: MIT

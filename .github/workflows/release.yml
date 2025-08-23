@@ -40,6 +40,7 @@ jobs:
           args: release --clean --config deployments/.goreleaser.yml
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          HOMEBREW_TAP_GITHUB_TOKEN: ${{ secrets.HOMEBREW_TAP_TOKEN }}
 
   validate:
     name: Validate Release
