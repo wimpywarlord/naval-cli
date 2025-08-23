@@ -133,6 +133,8 @@ brews:
       owner: wimpywarlord
       name: homebrew-naval-cli
       branch: master
+      # Use the HOMEBREW_TAP_GITHUB_TOKEN for authentication
+      token: "{{ .Env.HOMEBREW_TAP_GITHUB_TOKEN }}"
     
     folder: Formula
     
