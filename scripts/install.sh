@@ -99,7 +99,40 @@ download_binary() {
     # Remove 'v' prefix if present
     version_num=${version#v}
     
-    DOWNLOAD_URL="https://github.com/${REPO}/releases/download/${version}/${BINARY_NAME}-${platform}.tar.gz"
+    # Convert platform format for the actual release naming
+    # darwin-arm64 -> Darwin_arm64
+    # linux-amd64 -> Linux_x86_64
+    case "$platform" in
+        darwin-amd64)
+            release_platform="Darwin_x86_64"
+            ;;
+        darwin-arm64)
+            release_platform="Darwin_arm64"
+            ;;
+        linux-amd64)
+            release_platform="Linux_x86_64"
+            ;;
+        linux-arm64)
+            release_platform="Linux_arm64"
+            ;;
+        linux-386)
+            release_platform="Linux_i386"
+            ;;
+        linux-arm)
+            release_platform="Linux_armv6"
+            ;;
+        freebsd-amd64)
+            release_platform="Freebsd_x86_64"
+            ;;
+        freebsd-386)
+            release_platform="Freebsd_i386"
+            ;;
+        *)
+            error "Unsupported platform: $platform"
+            ;;
+    esac
+    
+    DOWNLOAD_URL="https://github.com/${REPO}/releases/download/${version}/${BINARY_NAME}_${version_num}_${release_platform}.tar.gz"
     TEMP_DIR=$(mktemp -d)
     ARCHIVE_PATH="${TEMP_DIR}/${BINARY_NAME}.tar.gz"
     
