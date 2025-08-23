@@ -4,7 +4,7 @@
 *.dll
 *.so
 *.dylib
-naval-cli
+/naval-cli
 
 # Test binary, built with `go test -c`
 *.test
@@ -42,7 +42,10 @@ build/
 
 # Debug files
 debug
-*.loghomebrew-naval-cli/
+*.log
+
+# Homebrew tap directory
+homebrew-naval-cli/
 
 .claude
 
